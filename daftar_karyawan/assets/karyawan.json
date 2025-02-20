@@ -1,0 +1,32 @@
+[
+  {
+    "nama": "John",
+    "umur": 30,
+    "alamat": {
+      "jalan": "Jalan Merdeka No. 10",
+      "kota": "Jakarta",
+      "provinsi": "DKI Jakarta"
+    },
+    "hobi": ["berenang", "membaca", "bersepeda"]
+  },
+  {
+    "nama": "Sarah",
+    "umur": 28,
+    "alamat": {
+      "jalan": "Jalan Sudirman No. 5",
+      "kota": "Bandung",
+      "provinsi": "Jawa Barat"
+    },
+    "hobi": ["memasak", "berkebun", "traveling"]
+  },
+  {
+    "nama": "Andi",
+    "umur": 35,
+    "alamat": {
+      "jalan": "Jalan Pahlawan No. 2",
+      "kota": "Surabaya",
+      "provinsi": "Jawa Timur"
+    },
+    "hobi": ["fotografi", "musik", "mendaki gunung"]
+  }
+]
