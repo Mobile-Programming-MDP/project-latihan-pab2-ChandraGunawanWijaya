@@ -112,7 +112,7 @@ Future<void> _toggleFavorite() async {
                     color: Colors.blue,
                   ),
                   const SizedBox(width: 10),
-                  Text(
+                  const Text(
                     'Release Date : ',
                     style: TextStyle(
                       fontSize: 16, fontWeight: FontWeight.bold

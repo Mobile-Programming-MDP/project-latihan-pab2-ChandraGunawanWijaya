@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "433864565618",
+    "firebase_url": "https://chandra-app-70373-default-rtdb.firebaseio.com",
+    "project_id": "chandra-app-70373",
+    "storage_bucket": "chandra-app-70373.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:433864565618:android:a6f930ef8ca958ac3fb3eb",
+        "android_client_info": {
+          "package_name": "com.example.daftar_belanja"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAp5FpFOSzJHwBTCfp873CvH962RZzXGr0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
