@@ -59,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(padding: const EdgeInsets.all(8.0),
+        Padding(padding: const EdgeInsets.all(10.0),
         child: Text(
           title,
           style: const TextStyle(
@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(7.0),
                   child: Column(
                     children: [
                       Image.network(
