@@ -1,0 +1,22 @@
+1. // Download Firebase CLI
+npm install - g firebase-tools
+
+// Login Firebase
+firebase Login
+
+// install FlutterFireCLI
+dart pub global activate flutterfire_cli
+
+// Konfigurasikan Aplikasi
+flutterfire configure
+
+// Inisiasi Firebase
+flutter pub add firebase_core
+flutterfire configure
+
+2. Dependensi Fluttercore, RTDB, Auth
+flutter pub add firebase_core
+flutter pub add firebase_database
+flutter pub add firebase_auth
+
+ilacac

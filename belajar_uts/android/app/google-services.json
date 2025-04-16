@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "370589648676",
+    "project_id": "belajar-uts",
+    "storage_bucket": "belajar-uts.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:370589648676:android:c29aec3302a91dd4d255b1",
+        "android_client_info": {
+          "package_name": "com.example.belajar_uts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcSpqCFlrSF6_ErqAWD-pNK2qcdzLinB8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
