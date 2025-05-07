@@ -16,6 +16,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
             } else if (snapshot.hasData) {
               return const HomeScreen();
             } else if (snapshot.hasError) {
-              return const Center(child: Text('Terjdi Kesalahan'));
+              return const Center(child: Text('Terjadi Kesalahan'));
             } else {
               return const SignInScreen();
             }
