@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fasum_app/screen/add_post_screen.dart';
+import 'package:fasum_app/screen/detail_screen.dart';
 import 'package:fasum_app/screen/sign_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,50 +17,32 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String? selectedCategory;
-
-  List<String> categories = [
+  final List<String> categories = [
     'Jalan Rusak',
-    'Marka Pudar',
     'Lampu Mati',
-    'Trotoar Rusak',
-    'Rambu Rusak',
-    'Jembatan Rusak',
     'Sampah Menumpuk',
-    'Saluran Tersumbat',
-    'Sungai Tercemar',
-    'Sampah Sungai',
-    'Pohon Tumbang',
-    'Taman Rusak',
-    'Fasilitas Rusak',
-    'Pipa Bocor',
-    'Vandalisme',
-    'Banjir',
-    'Lainnya',
   ];
 
   String formatTime(DateTime dateTime) {
     final now = DateTime.now();
     final diff = now.difference(dateTime);
-
     if (diff.inSeconds < 60) {
-      return '${diff.inSeconds}s ago';
+      return '${diff.inSeconds} secs ago';
     } else if (diff.inMinutes < 60) {
-      return '${diff.inMinutes}m ago';
+      return '${diff.inMinutes} mins ago';
     } else if (diff.inHours < 24) {
-      return '${diff.inHours}h ago';
+      return '${diff.inHours} hrs ago';
     } else {
-      return '${diff.inDays}d ago';
+      return DateFormat('dd/MM/yyyy').format(dateTime);
     }
   }
 
   Future<void> signOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-
-    if (context.mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SignInScreen()),
-      );
-    }
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
+    );
   }
 
   void _showCategoryFilter() async {
@@ -77,10 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ListTile(
                   leading: const Icon(Icons.clear),
                   title: const Text('Semua Kategori'),
-                  onTap: () => Navigator.pop(
-                    context,
-                    null,
-                  ), // Null untuk memilih semua kategori
+                  onTap: () => Navigator.pop(context, null),
                 ),
                 const Divider(),
                 ...categories.map(
@@ -101,18 +83,10 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
-    if (result != null) {
-      setState(() {
-        selectedCategory =
-            result; // Set kategori yang dipilih atau null untuk Semua Kategori
-      });
-    } else {
-      // Jika result adalah null, berarti memilih Semua Kategori
-      setState(() {
-        selectedCategory =
-            null; // Reset ke null untuk menampilkan semua kategori
-      });
-    }
+
+    setState(() {
+      selectedCategory = result;
+    });
   }
 
   @override
@@ -123,6 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
+            onPressed: _showCategoryFilter,
+            icon: const Icon(Icons.filter_list),
+            tooltip: "Filter Kategori",
+          ),
+          IconButton(
             onPressed: () {
               signOut(context);
             },
@@ -130,17 +109,20 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: StreamBuilder(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {});
+        },
+        child: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection("posts")
               .orderBy('createdAt', descending: true)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
+
             final posts = snapshot.data!.docs.where((doc) {
               final data = doc.data();
               final category = data['category'] ?? 'Lainnya';
@@ -149,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             if (posts.isEmpty) {
               return const Center(
-                child: Text("Tidak ada laporan untuk kategori ini"),
+                child: Text('Tidak ada laporan untuk kategori ini!'),
               );
             }
 
@@ -159,72 +141,107 @@ class _HomeScreenState extends State<HomeScreen> {
                 final data = posts[index].data();
                 final imageBase64 = data['image'];
                 final description = data['description'];
-                final createdAtStr = data['createdAt'];
                 final fullName = data['fullName'] ?? 'Anonim';
 
-                final createdAt = DateTime.parse(createdAtStr);
-                return Card(
-                  margin: const EdgeInsets.all(10),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (imageBase64 != null)
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(10),
+                late final DateTime createdAt;
+                final rawCreatedAt = data['createdAt'];
+
+                // 🔧 Fix error FormatException
+                if (rawCreatedAt is Timestamp) {
+                  createdAt = rawCreatedAt.toDate();
+                } else if (rawCreatedAt is String) {
+                  try {
+                    createdAt = DateTime.parse(rawCreatedAt);
+                  } catch (e) {
+                    createdAt = DateTime.now(); // fallback
+                  }
+                } else {
+                  createdAt = DateTime.now(); // fallback
+                }
+
+                final heroTag =
+                    'fasum-image-${createdAt.millisecondsSinceEpoch}';
+
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailScreen(
+                          imageBase64: imageBase64,
+                          description: description,
+                          createdAt: createdAt,
+                          fullName: fullName,
+                          latitude: data['latitude'] ?? 0.0,
+                          longitude: data['longitude'] ?? 0.0,
+                          category: data['category'] ?? '',
+                          heroTag: heroTag,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (imageBase64 != null)
+                          ClipRRect(
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(10),
+                            ),
+                            child: Image.memory(
+                              base64Decode(imageBase64),
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: 200,
+                            ),
                           ),
-                          child: Image.memory(
-                            base64Decode(imageBase64),
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: 200,
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                formatTime(createdAt),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                fullName,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                description ?? '',
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ],
                           ),
                         ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  formatTime(createdAt),
-                                  style: const TextStyle(
-                                      fontSize: 12, color: Colors.grey),
-                                ),
-                                Text(
-                                  fullName,
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                const SizedBox(
-                                  height: 6,
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 6,
-                            ),
-                            Text(
-                              description ?? '',
-                              style: const TextStyle(fontSize: 16),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
             );
-          }),
+          },
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const AddPostScreen()),
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );

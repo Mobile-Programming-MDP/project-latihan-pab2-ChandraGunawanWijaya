@@ -1,0 +1,2 @@
+D:/materi-php-MichellePtrciaa-main/project-latihan-pab2-ChandraGunawanWijaya/fasum_app/android/app/.cxx/Debug/302j2x2u/x86_64/CMakeFiles/edit_cache.dir
+D:/materi-php-MichellePtrciaa-main/project-latihan-pab2-ChandraGunawanWijaya/fasum_app/android/app/.cxx/Debug/302j2x2u/x86_64/CMakeFiles/rebuild_cache.dir
