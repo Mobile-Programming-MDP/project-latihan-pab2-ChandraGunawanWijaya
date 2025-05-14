@@ -10,7 +10,7 @@ import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AddPostScreen extends StatefulWidget {
-  const AddPostScreen({Key? key}) : super(key: key);
+  const AddPostScreen({super.key});
   @override
   State<AddPostScreen> createState() => _AddPostScreenState();
 }
@@ -309,7 +309,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Post')),
+      appBar: AppBar(title: const Text('Add Post')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
