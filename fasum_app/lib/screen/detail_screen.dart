@@ -94,7 +94,7 @@ class _DetailScreenState extends State<DetailScreen> {
               ],
             ),
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -113,7 +113,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                   size: 20,
                                   color: Colors.red,
                                 ),
-                                SizedBox(width: 4),
+                                const SizedBox(width: 4),
                                 Text(
                                   widget.category,
                                   style: const TextStyle(
@@ -122,7 +122,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 )
                               ],
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             Row(
                               children: [
                                 const Icon(
@@ -130,7 +130,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                   size: 20,
                                   color: Colors.red,
                                 ),
-                                SizedBox(width: 4),
+                                const SizedBox(width: 4),
                                 Text(
                                   createdAtFormatted,
                                   style: const TextStyle(
@@ -157,9 +157,9 @@ class _DetailScreenState extends State<DetailScreen> {
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 20),
-                  Text(
+                  const Text(
                     "Lokasi",
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                   Text(
