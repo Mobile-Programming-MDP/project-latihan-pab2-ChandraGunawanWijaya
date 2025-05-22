@@ -222,7 +222,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
   }
 
   Future<void> sendNotificationToTopic(String body, String senderName) async {
-    final url = Uri.parse('https://lix-cloud.vercel.app/send-to-topic');
+    final url = Uri.parse('https://fasum-cloud-neon.vercel.app/send-to-topic');
     final response = await http.post(
       url,
       headers: {

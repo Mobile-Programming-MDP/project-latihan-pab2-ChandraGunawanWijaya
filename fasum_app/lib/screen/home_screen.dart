@@ -7,6 +7,7 @@ import 'package:fasum_app/screen/detail_screen.dart';
 import 'package:fasum_app/screen/edit_post_screen.dart';
 import 'package:fasum_app/screen/my_post_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -167,6 +168,25 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       await postRef.update({'likes': likes});
+    }
+  }
+
+  void sendLikeNotification(String postId) async {
+    final postSnapshot =
+        await FirebaseFirestore.instance.collection("posts").doc(postId).get();
+    final postOwnerData = postSnapshot.data();
+    final postOwnerId = postOwnerData['userId'];
+    final postOwnerSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(postOwnerId)
+        .get();
+    final postOwnerToken = postOwnerSnapshot.data()?['token'];
+    if (postOwnerToken != null){
+      sendLikeNotification(
+            postOwnerToken,
+            "New like on your post",
+            "Someone liked your post with topic ${postOwnerToken}"
+      )
     }
   }
 
@@ -335,12 +355,26 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void saveToken(String token, String uid) async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update({'token': token});
+  }
+
   @override
   void initState() {
     super.initState();
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
       _currentUserId = currentUser.uid;
+      // Mendapatkan token FCM
+      FirebaseMessaging.instance.getToken().then((token) {
+        if (token != null) {
+          saveToken(token, currentUser.uid);
+          print("FCM Token : $token");
+        }
+      });
     }
   }
 
